@@ -1,6 +1,9 @@
 package io.github.derick.aquiteturaspring.todos;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/todo")
@@ -12,7 +15,14 @@ public class TodoController {
         this.service = service;
     }
     public TodoEntity salvar(@RequestBody TodoEntity todo) {
-       return this.service.salvar(todo);
+        try{
+            return this.service.salvar(todo);
+        }
+        catch (IllegalArgumentException ex){
+            var msg = ex.getMessage();
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, msg);
+        }
+
 
     }
     @PutMapping("{id}")
